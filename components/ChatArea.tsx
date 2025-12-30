@@ -1,5 +1,4 @@
-
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Send, Image as ImageIcon, Sparkles, Loader2, ArrowDownCircle } from 'lucide-react';
 import { ChatSession, Message, UserSettings } from '../types';
@@ -12,13 +11,14 @@ interface ChatAreaProps {
   onMessagesUpdate: (messages: Message[]) => void;
 }
 
-const gemini = new GeminiService();
-
 const ChatArea: React.FC<ChatAreaProps> = ({ session, settings, onMessagesUpdate }) => {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showScrollBottom, setShowScrollBottom] = useState(false);
+
+  // Instantiating the service safely within the component
+  const gemini = useMemo(() => new GeminiService(), []);
 
   const scrollToBottom = useCallback((behavior: ScrollBehavior = 'smooth') => {
     if (scrollRef.current) {
@@ -62,7 +62,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({ session, settings, onMessagesUpdate
     setIsTyping(true);
 
     try {
-      const imageTriggerWords = ['generate image of', 'show me a picture of', 'create an image of', 'display image', 'make a photo'];
+      const imageTriggerWords = ['generate image of', 'show me a picture of', 'create an image of', 'display image', 'make a photo', 'photo bnao'];
       const shouldGenImage = settings.enableImageGen && imageTriggerWords.some(word => currentInput.toLowerCase().includes(word));
 
       if (shouldGenImage) {
@@ -70,7 +70,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({ session, settings, onMessagesUpdate
         const aiMessage: Message = {
           id: uuidv4(),
           role: 'model',
-          content: "System: Visual data synthesis complete. ⚡",
+          content: "System: Visual synthesis complete. ⚡ Check it out.",
           imageUrl,
           timestamp: Date.now()
         };
@@ -106,7 +106,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({ session, settings, onMessagesUpdate
       const errorMessage: Message = {
         id: uuidv4(),
         role: 'model',
-        content: "CRITICAL: SIGNAL LOST. RETRY INJECTION.",
+        content: "CRITICAL ERROR: Connection severed. Retrying uplink...",
         timestamp: Date.now()
       };
       onMessagesUpdate([...updatedWithUser, errorMessage]);
@@ -125,7 +125,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({ session, settings, onMessagesUpdate
         {session.messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center space-y-5 opacity-10 select-none pointer-events-none">
             <Sparkles size={48} />
-            <p className="text-xs font-bold mono tracking-[0.5em] uppercase">SYSTEM IDLE</p>
+            <p className="text-xs font-bold mono tracking-[0.5em] uppercase">LINK IDLE</p>
           </div>
         ) : (
           session.messages.map((msg) => (
@@ -192,7 +192,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({ session, settings, onMessagesUpdate
             </div>
           </div>
           <div className="mt-2 text-center">
-            <span className="text-[8px] mono text-zinc-800 uppercase tracking-[0.4em]">Secure Terminal • Neural Sync Active</span>
+            <span className="text-[8px] mono text-zinc-800 uppercase tracking-[0.4em]">ZOHAIB X NO 18 Terminal • Encryption Active</span>
           </div>
         </form>
       </div>
