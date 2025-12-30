@@ -7,7 +7,9 @@ export class GeminiService {
   private ai: GoogleGenAI;
 
   constructor() {
-    this.ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+    // Safety check for environment variable access
+    const key = typeof process !== 'undefined' ? process.env.API_KEY : undefined;
+    this.ai = new GoogleGenAI({ apiKey: key || '' });
   }
 
   async *generateChatStream(
@@ -26,7 +28,7 @@ export class GeminiService {
     contents.push({ role: 'user', parts: [{ text: userInput }] });
 
     const config: any = {
-      systemInstruction: SYSTEM_PROMPTS[persona] + "\n\nCRITICAL: Use Roman Urdu (Hinglish) naturally. Be extremely fast and solid. No apologies.",
+      systemInstruction: SYSTEM_PROMPTS[persona] + "\n\nCRITICAL: Use expert Roman Urdu (Hinglish) naturally. Be extremely fast and solid. No apologies.",
       thinkingConfig: { thinkingBudget: 0 }
     };
 
