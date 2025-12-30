@@ -1,0 +1,7 @@
+{
+  "name": "ZOHAIB X NO 18",
+  "description": "A private, local-first AI chat application with a premium hacker aesthetic, featuring bold personas including ZohaibXNo18, Evil Friend, and Ella.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
